@@ -99,20 +99,20 @@ router.patch('/user/me', auth, async (req, res) => {
   );
 
   if (!isValidUserField) {
-    res
-      .status(404)
-      .json({ error: `Only Fields: (${userFields}) are accepted!` });
+    return res
+      .status(400)
+      .send({ error: `Only Fields: (${userFields}) are accepted!` });
   }
 
   try {
-    // assigning user properties with update properties provided
+    //// assigning user properties with update properties provided
     updates.forEach((update) => (req.user[update] = req.body[update]));
 
     await req.user.save();
 
     res.send(req.user);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).send({ error: e });
   }
 });
 

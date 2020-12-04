@@ -98,7 +98,7 @@ userSchema.methods.toJSON = function () {
 // Generate JWT
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  console.log(`From generateAuthTokenMethod -> ${user._id}`);
+  //console.log(`From generateAuthTokenMethod -> ${user._id}`);
 
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
 

@@ -12,7 +12,6 @@ router.get('/testtask', (req, res) => {
 
 // Create Task
 router.post('/tasks', auth, async (req, res) => {
-  //const task = new TaskModel(req.body);
   const task = new TaskModel({
     ...req.body,
     owner: req.user._id,
@@ -30,7 +29,7 @@ router.post('/tasks', auth, async (req, res) => {
 
 // Read all tasks = /tasks
 // Read Filter Tasks = /tasks?completed=true
-// Read Pagination Tasks = /tasks?limit=10&skip=20
+// Read Pagination Tasks = /tasks?limit=5&skip=0 -->> page# = skip/limit + 1
 // Read Sorting Task = /tasks?sortBy=createdAt:desc
 router.get('/tasks', auth, async (req, res) => {
   const match = {};
@@ -108,9 +107,9 @@ router.patch('/task/:id', auth, async (req, res) => {
 
   // if not valid, Throw an error!
   if (!isValidTaskField) {
-    res
+    return res
       .status(400)
-      .json({ error: `Only Fields: (${taskFields}) are accepted!` });
+      .send({ error: `Only Fields: (${taskFields}) are accepted!` });
   }
 
   try {
@@ -120,15 +119,15 @@ router.patch('/task/:id', auth, async (req, res) => {
     });
 
     if (!task) {
-      res.status(404).json({ error: `Task Not Found!` });
+      return res.status(404).send({ error: `Task Not Found!` });
     }
 
     taskUpdates.forEach((update) => (task[update] = req.body[update]));
     await task.save();
 
-    res.status(200).send(task);
+    return res.status(200).send(task);
   } catch (e) {
-    res.status(400).json({ error: e });
+    return res.status(400).send({ error: e });
   }
 });
 
